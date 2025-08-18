@@ -1,0 +1,11 @@
+# .github/workflows/appicon.yml
+name: AppIcon Sync
+on:
+  push: { paths: ['AppIcons.zip'] }
+  pull_request: { paths: ['AppIcons.zip'] }
+  workflow_dispatch:
+jobs:
+  sync:
+    uses: affmobile/ci-workflows/.github/workflows/appicon-sync.yml@main
+    with:
+      zip_path: 'AppIcons.zip'
