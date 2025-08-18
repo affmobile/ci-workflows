@@ -1,0 +1,62 @@
+name: Sync iOS AppIcon (Reusable)
+
+on:
+  workflow_call:
+    inputs:
+      zip_path:
+        description: "Path to AppIcons.zip in repo"
+        required: false
+        default: 'AppIcons.zip'
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Extract AppIcons.zip and locate AppIcon.appiconset
+        id: locate
+        run: |
+          set -euo pipefail
+          ZIP="${{ inputs.zip_path }}"
+          [ -f "$ZIP" ] || { echo "✗ $ZIP not found"; exit 1; }
+
+          mkdir -p _appicon_zip
+          unzip -q "$ZIP" -d _appicon_zip
+
+          if [ -d "_appicon_zip/Assets.xcassets/AppIcon.appiconset" ]; then
+            SRC="_appicon_zip/Assets.xcassets/AppIcon.appiconset"
+          elif [ -d "_appicon_zip/AppIcon.appiconset" ]; then
+            SRC="_appicon_zip/AppIcon.appiconset"
+          else
+            echo "✗ Could not find AppIcon.appiconset in the zip."
+            exit 1
+          fi
+
+          [ -f "$SRC/Contents.json" ] || { echo "✗ Missing Contents.json in $SRC"; exit 1; }
+
+          echo "SRC=$SRC" >> "$GITHUB_OUTPUT"
+
+      - name: Copy AppIcon into iOS asset catalog
+        run: |
+          TARGET="ios/Runner/Assets.xcassets/AppIcon.appiconset"
+          mkdir -p "$TARGET"
+          rm -rf "$TARGET"/*
+          cp -R "${{ steps.locate.outputs.SRC }}"/. "$TARGET"/
+          echo "✓ Copied AppIcon to $TARGET"
+
+      - name: Commit if changed
+        run: |
+          if [[ -n $(git status --porcelain ios/Runner/Assets.xcassets/AppIcon.appiconset) ]]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add ios/Runner/Assets.xcassets/AppIcon.appiconset
+            git commit -m "chore(ios): sync AppIcon from ${{ inputs.zip_path }}"
+            git push
+          else
+            echo "No changes."
+          fi
