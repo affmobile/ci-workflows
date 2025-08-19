@@ -18,16 +18,13 @@
 
 **Как добавить workflow через Actions:**
 
-1. Во вкладке **Actions** нажмите **New workflow**.  
+1. Во вкладке **Actions** нажмите **New workflow** (опционально) -> выберите **set up a workflow yourself**.  
    ![Новый workflow](screenshots/actions-new.png)
-2. Внизу страницы выберите **set up a workflow yourself**.  
-   ![Set up yourself](screenshots/actions-setup.png)
-3. Введите имя файла:
+2. Введите имя файла:
    ```
-   .github/workflows/appicon-sync.yml
+   .github/workflows/appicon.yml
    ```
-4. Вставьте содержимое:
-
+3. Вставьте содержимое:
    ```yaml
    name: Sync iOS AppIcon
 
@@ -47,7 +44,7 @@
          target: ios/Runner/Assets.xcassets/AppIcon.appiconset
    ```
 
-5. Нажмите **Start commit → Commit new file**.
+4. Нажмите **Start commit → Commit new file**.
 
 Теперь проект подключён к центральному workflow, можно обновлять иконку.
 
