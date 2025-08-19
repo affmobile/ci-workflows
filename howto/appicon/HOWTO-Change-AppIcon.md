@@ -30,7 +30,7 @@
 
    on:
      push:
-       branches: [main]
+       branches: ['**']
      workflow_dispatch:
 
    permissions:
@@ -89,13 +89,13 @@
 2. Нажмите **Add file → Upload files**.  
 3. Перетащите архив `AppIcons.zip` в окно загрузки.  
    ![Перетаскивание архива](screenshots/8.jpg)
-4. Зафиксируйте изменения (commit changes) напрямую в ветку **main**.
+4. Зафиксируйте изменения (commit changes) в нужную ветку.
 
 ---
 
 ## 4. Автоматическая замена иконки
 
-После попадания коммита в `main` автоматически запустится GitHub Action. Он:
+После любого пуша в любую ветку автоматически запустится GitHub Action. Он:
 - распакует `AppIcons.zip`;
 - найдёт `AppIcon.appiconset`;
 - заменит иконки в `ios/Runner/Assets.xcassets/AppIcon.appiconset`;
