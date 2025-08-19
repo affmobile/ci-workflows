@@ -24,6 +24,7 @@
    ```
    .github/workflows/appicon.yml
    ```
+   И выберите нужную ветку (main по умолчанию)
 3. Вставьте содержимое:
    ```yaml
    name: Sync iOS AppIcon
